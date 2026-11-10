@@ -1,29 +1,22 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { AuthService } from './auth.service.js';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() body: { username: string; password: string }) {
-    return this.authService.register(body.username, body.password);
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() dto: { username: string; pass?: string; password?: string }) {
+    // Kinukuha ang password kahit 'pass' o 'password' ang ipasa mula sa frontend
+    const userPassword = dto.pass || dto.password || '';
+    return this.authService.register(dto.username, userPassword);
   }
 
   @Post('login')
-  async login(@Body() body: { username: string; password: string }) {
-    const user = await this.authService.validateUser(body.username, body.password);
-    if (!user) return { error: 'Invalid credentials' };
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() dto: { username: string; pass?: string; password?: string }) {
+    const user = await this.authService.validateUser(dto.username, dto.pass || dto.password || '');
     return this.authService.login(user);
-  }
-
-  @Post('logout')
-  async logout(@Body() body: { userId: number }) {
-    return this.authService.logout(body.userId);
-  }
-
-  @Post('refresh')
-  async refresh(@Body() body: { refreshToken: string }) {
-    return this.authService.refreshTokens(body.refreshToken);
   }
 }

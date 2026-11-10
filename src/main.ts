@@ -1,11 +1,16 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // Rejects any incoming payload properties that are not explicitly defined in DTOs
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  await app.listen(process.env.PORT ?? 3000);
+
+  app.enableCors({
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true,
+});
+
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
