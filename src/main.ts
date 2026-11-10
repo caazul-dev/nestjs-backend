@@ -5,14 +5,15 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Pinapayagan ang lahat ng requests (CORS fix)
+  // Pinapayagan ang lahat ng Origins, Headers, at HTTP Methods
   app.enableCors({
-    origin: true,
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    allowedHeaders: '*',
+    credentials: false,
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
