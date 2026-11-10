@@ -1,16 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Baguhin o Idagdag ang linya na ito bago mag-listen:
+  // Pinapayagan ang lahat ng requests (CORS fix)
   app.enableCors({
-    origin: true, // pinapayagan ang lahat ng frontend origins (kasama ang Vercel)
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  await app.listen(process.env.PORT || 3000);
+  app.useGlobalPipes(new ValidationPipe());
+
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
 bootstrap();
