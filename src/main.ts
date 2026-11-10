@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Payagan ang lahat ng requests kasama ang Vercel frontend
+  // Payagan ang lahat ng CORS requests mula sa Vercel at Localhost
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
