@@ -7,16 +7,21 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() dto: { username: string; pass?: string; password?: string }) {
-    // Kinukuha ang password kahit 'pass' o 'password' ang ipasa mula sa frontend
-    const userPassword = dto.pass || dto.password || '';
-    return this.authService.register(dto.username, userPassword);
+  async register(@Body() dto: Record<string, any>) {
+    // Tinitiyak na makukuha ang password kahit 'pass' o 'password' ang gamit sa frontend
+    const username = dto.username;
+    const pass = dto.pass || dto.password || '';
+    
+    return this.authService.register(username, pass);
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() dto: { username: string; pass?: string; password?: string }) {
-    const user = await this.authService.validateUser(dto.username, dto.pass || dto.password || '');
+  async login(@Body() dto: Record<string, any>) {
+    const username = dto.username;
+    const pass = dto.pass || dto.password || '';
+    
+    const user = await this.authService.validateUser(username, pass);
     return this.authService.login(user);
   }
 }
