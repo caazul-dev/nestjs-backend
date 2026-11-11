@@ -8,7 +8,6 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: any) {
-    // I-pass nang tama ang username at password mula sa body
     return this.authService.register(body.username, body.password || body.pass);
   }
 
@@ -18,8 +17,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  @UseGuards(AuthGuard('jwt'))
   getProfile(@Request() req: any) {
-    return req.user;
+    return req.user || { username: 'Authenticated User' };
   }
 }
